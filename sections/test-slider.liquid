@@ -415,6 +415,7 @@
   let timer=null,locked=false,hovered=false;
 
   function getSlideImageUrl(slide) {
+    debugger
     // 1. Try the data attribute (most reliable)
     if (slide.dataset.imageUrl) return slide.dataset.imageUrl;
     // 2. Fallback to the img src
