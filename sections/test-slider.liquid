@@ -499,7 +499,7 @@
       old.classList.remove('is-active','is-leaving');
       next.classList.remove('is-entering');
       current=target;locked=false;update();
-    },transition+40);
+    },transition);
   }
 
   function next(){if(current<slides.length-1)goTo(current+1);else if(loop)goTo(0)}
