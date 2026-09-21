@@ -415,7 +415,6 @@
   let timer=null,locked=false,hovered=false;
 
   function getSlideImageUrl(slide) {
-    debugger
     // 1. Try the data attribute (most reliable)
     if (slide.dataset.imageUrl) return slide.dataset.imageUrl;
     // 2. Fallback to the img src
@@ -425,9 +424,6 @@
   }
 
   function update(){
-    current = [...document.querySelectorAll('.custom-slider__slides .custom-slide')]
-  .findIndex(slide => slide.classList.contains('is-active'));
-
     const nextIndex=current<slides.length-1?current+1:(loop?0:current);
     if(counter)counter.textContent=String(current+1).padStart(2,'0');
     dots.forEach((d,i)=>{d.classList.toggle('is-active',i===current);d.setAttribute('aria-selected',i===current?'true':'false');});
@@ -436,11 +432,16 @@
       const nextSlide=slides[nextIndex];
       if(nextSlide){
         const preview=nextBtn.querySelector('.custom-slider__next-image');
-        debugger
         if(preview){
           const src=getSlideImageUrl(nextSlide);
           if(src && preview.src !== src){
             preview.src = src;
+          }
+           if(srcset && preview.srcset !== srcset){
+            preview.srcset = srcset;
+          }
+          if(sizes && preview.sizes !== sizes){
+            preview.sizes = sizes;
           }
         }
       }
