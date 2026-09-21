@@ -424,6 +424,7 @@
   }
 
   function update(){
+    console.log(slides)
     const nextIndex=current<slides.length-1?current+1:(loop?0:current);
     if(counter)counter.textContent=String(current+1).padStart(2,'0');
     dots.forEach((d,i)=>{d.classList.toggle('is-active',i===current);d.setAttribute('aria-selected',i===current?'true':'false');});
