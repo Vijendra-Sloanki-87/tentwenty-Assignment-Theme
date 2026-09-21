@@ -375,22 +375,22 @@
 #CustomSlider-{{ section.id }} .custom-slider__dot.is-active{opacity:1;background:#fff}
 
 @media (max-width: 990px){
-#CustomSlider-{{ section.id }}{height:var(--cs-height-tablet)}
-#CustomSlider-{{ section.id }} .custom-slide__heading{color: white;font-size:clamp({{ section.settings.heading_mobile }}px,8vw,{{ section.settings.heading_max }}px)}
+  #CustomSlider-{{ section.id }}{height:var(--cs-height-tablet)}
+  #CustomSlider-{{ section.id }} .custom-slide__heading{color: white;font-size:clamp({{ section.settings.heading_mobile }}px,8vw,{{ section.settings.heading_max }}px)}
 }
 @media (max-width:749px){
-#CustomSlider-{{ section.id }}{height:var(--cs-height-mobile);min-height:420px}
-#CustomSlider-{{ section.id }} .custom-slide__content{left:7%;right:auto;width:86%}
-#CustomSlider-{{ section.id }} .custom-slide__content--top-right,#CustomSlider-{{ section.id }} .custom-slide__content--center-right,#CustomSlider-{{ section.id }} .custom-slide__content--bottom-right{left:7%;right:auto;text-align:left}
-#CustomSlider-{{ section.id }} .custom-slide__content--center{left:50%;width:86%;text-align:center}
-#CustomSlider-{{ section.id }} .custom-slide__content--bottom-center{left:50%;width:86%;text-align:center}
-#CustomSlider-{{ section.id }} .custom-slide__heading{color: white; font-size:{{ section.settings.heading_mobile }}px}
-#CustomSlider-{{ section.id }} .custom-slider__next{left:7%;bottom:6%}
-#CustomSlider-{{ section.id }} .custom-slider__counter{left:calc(7% + var(--cs-button-size) + 20px);bottom:calc(6% + {{ section.settings.counter_vertical_offset }}px)}
-#CustomSlider-{{ section.id }} .custom-slider__counter-line{width:60px}
+  #CustomSlider-{{ section.id }}{height:var(--cs-height-mobile);min-height:420px}
+  #CustomSlider-{{ section.id }} .custom-slide__content{left:7%;right:auto;width:86%}
+  #CustomSlider-{{ section.id }} .custom-slide__content--top-right,#CustomSlider-{{ section.id }} .custom-slide__content--center-right,#CustomSlider-{{ section.id }} .custom-slide__content--bottom-right{left:7%;right:auto;text-align:left}
+  #CustomSlider-{{ section.id }} .custom-slide__content--center{left:50%;width:86%;text-align:center}
+  #CustomSlider-{{ section.id }} .custom-slide__content--bottom-center{left:50%;width:86%;text-align:center}
+  #CustomSlider-{{ section.id }} .custom-slide__heading{color: white; font-size:{{ section.settings.heading_mobile }}px}
+  #CustomSlider-{{ section.id }} .custom-slider__next{left:7%;bottom:6%}
+  #CustomSlider-{{ section.id }} .custom-slider__counter{left:calc(7% + var(--cs-button-size) + 20px);bottom:calc(6% + {{ section.settings.counter_vertical_offset }}px)}
+  #CustomSlider-{{ section.id }} .custom-slider__counter-line{width:60px}
 }
 @media (prefers-reduced-motion:reduce){
-#CustomSlider-{{ section.id }} .custom-slide.is-entering,#CustomSlider-{{ section.id }} .custom-slide.is-active .custom-slide__content > *{animation-duration:.01ms!important}
+  #CustomSlider-{{ section.id }} .custom-slide.is-entering,#CustomSlider-{{ section.id }} .custom-slide.is-active .custom-slide__content > *{animation-duration:.01ms!important}
 }
 </style>
 
@@ -424,7 +424,7 @@
   }
 
   function update(){
-    const nextIndex=current<slides.length-1?current+1:(loop?0:current);
+    const nextIndex=(current+1)%slides.length;
     if(counter)counter.textContent=String(current+1).padStart(2,'0');
     dots.forEach((d,i)=>{d.classList.toggle('is-active',i===current);d.setAttribute('aria-selected',i===current?'true':'false');});
     if(nextBtn){
@@ -445,7 +445,12 @@
   function goTo(target){
     if(locked||target===current||target<0||target>=slides.length)return;
     locked=true;
-    const old=slides[current],next=slides[target];
+    const prev = current;
+    current = target;
+    // Update UI immediately for the new state (counter, dots, preview)
+    update();
+    const old=slides[prev],next=slides[current];
+    // Remove any lingering state classes
     slides.forEach(s=>s.classList.remove('is-entering','is-leaving'));
     old.classList.add('is-leaving');
     next.classList.add('is-entering','is-active');
@@ -458,7 +463,6 @@
       progress.style.animation='';
     }
 
-    update();
     window.setTimeout(()=>{
       old.classList.remove('is-active','is-leaving');
       next.classList.remove('is-entering');
