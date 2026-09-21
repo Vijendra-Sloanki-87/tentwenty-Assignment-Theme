@@ -423,8 +423,37 @@
     return null;
   }
 
+
+    function getSlideImageAttributes(slide) {
+    // Base URL without dimensions (stored in data-image-url)
+    let base = slide.dataset.imageUrl;
+    if (!base) {
+      // Fallback to the <img> src if data attribute missing
+      const img = slide.querySelector('.custom-slide__image');
+      if (img) base = img.src;
+    }
+    if (!base) return {src:'', srcset:'', sizes:''};
+
+    // Build srcset for widths 352, 500, 700, 1000
+    const widths = [352,500,700,1000];
+    const srcsetParts = widths.map(w => {
+      // Preserve any existing query parameters
+      const separator = base.includes('?') ? '&' : '?';
+      return `${base}${separator}width=${w} ${w}w`;
+    });
+    const srcset = srcsetParts.join(', ');
+
+    // sizes: show full width on mobile, fixed 500px on desktop
+    const sizes = '(max-width: 749px) 100vw, 500px';
+
+    // src is the default (500px) for backward compatibility
+    const src = `${base}${base.includes('?') ? '&' : '?'}width=500`;
+
+    return {src, srcset, sizes};
+  }
+
   function update(){
-    const nextIndex=current<slides.length-1?current+1:(loop?0:current);
+    const nextIndex=(current+1)%slides.length;
     if(counter)counter.textContent=String(current+1).padStart(2,'0');
     dots.forEach((d,i)=>{d.classList.toggle('is-active',i===current);d.setAttribute('aria-selected',i===current?'true':'false');});
     if(nextBtn){
@@ -433,11 +462,11 @@
       if(nextSlide){
         const preview=nextBtn.querySelector('.custom-slider__next-image');
         if(preview){
-          const src=getSlideImageUrl(nextSlide);
+          const {src, srcset, sizes}=getSlideImageAttributes(nextSlide);
           if(src && preview.src !== src){
             preview.src = src;
           }
-           if(srcset && preview.srcset !== srcset){
+          if(srcset && preview.srcset !== srcset){
             preview.srcset = srcset;
           }
           if(sizes && preview.sizes !== sizes){
@@ -447,6 +476,7 @@
       }
     }
   }
+
 
   function goTo(target){
     if(locked||target===current||target<0||target>=slides.length)return;
