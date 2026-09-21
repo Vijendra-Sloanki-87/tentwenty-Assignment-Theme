@@ -439,7 +439,7 @@
         if(preview){
           const src=getSlideImageUrl(nextSlide);
           if(src && preview.src !== src){
-            {% comment %} preview.src = src; {% endcomment %}
+            preview.src = src;
           }
         }
       }
