@@ -424,7 +424,6 @@
   }
 
   function update(){
-    debugger
     current = [...document.querySelectorAll('.custom-slider__slides .custom-slide')]
   .findIndex(slide => slide.classList.contains('is-active'));
 
@@ -436,6 +435,7 @@
       const nextSlide=slides[nextIndex];
       if(nextSlide){
         const preview=nextBtn.querySelector('.custom-slider__next-image');
+        debugger
         if(preview){
           const src=getSlideImageUrl(nextSlide);
           if(src && preview.src !== src){
