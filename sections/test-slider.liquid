@@ -423,7 +423,7 @@
     return null;
   }
 
-  function update(){
+  function update(current){
     debugger
     const nextIndex=current<slides.length-1?current+1:(loop?0:current);
     if(counter)counter.textContent=String(current+1).padStart(2,'0');
@@ -459,11 +459,13 @@
       progress.style.animation='';
     }
 
-    update();
+    update(current);
     window.setTimeout(()=>{
       old.classList.remove('is-active','is-leaving');
       next.classList.remove('is-entering');
-      current=target;locked=false;update();
+      current=target;
+      locked=false;
+      update(current);
     },transition+40);
   }
 
@@ -480,7 +482,7 @@
   root.addEventListener('touchstart',e=>{sx=e.changedTouches[0].clientX;sy=e.changedTouches[0].clientY},{passive:true});
   root.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)){dx<0?next():prev();start()}},{passive:true});
   document.addEventListener('shopify:section:unload',e=>{if(e.detail?.sectionId==='{{ section.id }}')stop()});
-  update(); // initial update sets counter, dots, and next preview
+  update(current); // initial update sets counter, dots, and next preview
   start();
 })();
 </script>
